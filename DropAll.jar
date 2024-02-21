@@ -1,0 +1,40 @@
+import net.runelite.api.Client;
+import net.runelite.api.MenuAction;
+import net.runelite.api.MenuEntry;
+import net.runelite.api.events.MenuEntryAdded;
+import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDescriptor;
+
+@PluginDescriptor(
+    name = "DropAll",
+    description = "Drops all items in your inventory",
+    tags = {"drop", "inventory"}
+)
+public class DropAllPlugin extends Plugin
+{
+    @Subscribe
+    public void onMenuEntryAdded(MenuEntryAdded event)
+    {
+        if (event.getOption().equals("Drop") && event.getTarget().startsWith("<col=ff9040>"))
+        {
+            Client client = this.client;
+            MenuEntry[] menuEntries = client.getMenuEntries();
+
+            for (MenuEntry entry : menuEntries)
+            {
+                if (entry.getOption().equals("Drop") && entry.getTarget().startsWith("<col=ff9040>"))
+                {
+                    client.invokeMenuAction(
+                        entry.getOption(),
+                        entry.getTarget(),
+                        entry.getIdentifier(),
+                        MenuAction.ITEM_THIRD_OPTION.getId(),
+                        entry.getParam0(),
+                        entry.getParam1()
+                    );
+                }
+            }
+        }
+    }
+}
